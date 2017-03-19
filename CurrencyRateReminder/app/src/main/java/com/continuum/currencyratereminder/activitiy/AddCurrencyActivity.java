@@ -1,4 +1,4 @@
-package com.continuum.currencyratereminder;
+package com.continuum.currencyratereminder.activitiy;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,7 +39,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(edtCurrency.getText()) || TextUtils.isEmpty(edtAmount.getText())){
+                if(TextUtils.isEmpty(edtCurrency.getText().toString()) || TextUtils.isEmpty(edtAmount.getText().toString())){
                     Snackbar.make(v, R.string.error_message_editText_empty , Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
@@ -53,8 +54,8 @@ public class AddCurrencyActivity extends AppCompatActivity {
         Log.d(TAG, "add Firebase:" + mAuth.getCurrentUser().getUid());
         String key = mDatabase.child(mAuth.getCurrentUser().getUid()).push().getKey();
         mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("CurrencyType").setValue("USD");
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Currency").setValue("3.6");
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Amount").setValue("50000");
+        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Currency").setValue(edtCurrency.getText().toString());
+        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Amount").setValue(edtAmount.getText().toString());
     }
 }
 
