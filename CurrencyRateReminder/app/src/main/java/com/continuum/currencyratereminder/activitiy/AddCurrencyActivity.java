@@ -1,8 +1,8 @@
 package com.continuum.currencyratereminder.activitiy;
 
+import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +23,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private Button btnAdd;
-    private EditText edtCurrency,edtAmount;
+    private EditText edtCurrency, edtAmount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,8 @@ public class AddCurrencyActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TextUtils.isEmpty(edtCurrency.getText().toString()) || TextUtils.isEmpty(edtAmount.getText().toString())){
-                    Snackbar.make(v, R.string.error_message_editText_empty , Snackbar.LENGTH_LONG)
+                if (TextUtils.isEmpty(edtCurrency.getText().toString()) || TextUtils.isEmpty(edtAmount.getText().toString())) {
+                    Snackbar.make(v, R.string.error_message_editText_empty, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                     return;
                 }
@@ -53,9 +53,9 @@ public class AddCurrencyActivity extends AppCompatActivity {
     private void addFirebase() {
         Log.d(TAG, "add Firebase:" + mAuth.getCurrentUser().getUid());
         String key = mDatabase.child(mAuth.getCurrentUser().getUid()).push().getKey();
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("CurrencyType").setValue("USD");
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Currency").setValue(edtCurrency.getText().toString());
-        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).child("Amount").setValue(edtAmount.getText().toString());
+        //TODO: UserCurrencyDoa 'dan user bilgileri çıkartılabilir.
+        UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(),key,"USD",edtCurrency.getText().toString(),edtAmount.getText().toString());
+        mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).setValue(userCurrency);
     }
 }
 
