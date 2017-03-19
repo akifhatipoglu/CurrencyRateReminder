@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "add button:" + mAuth.getCurrentUser());
+                Log.d(TAG, "add button:" + mAuth.getCurrentUser().getUid());
                 startActivity(new Intent(MainActivity.this, AddCurrencyActivity.class));
                 finish();
             }
