@@ -7,10 +7,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
@@ -41,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<UserCurrencyDAO> userCurrencyList;
 
     private TextView textViewForTrial;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-        if(mAuth.getCurrentUser() == null) {
+        if (mAuth.getCurrentUser() == null) {
             mAuth.signInAnonymously()
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -103,11 +102,11 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userCurrencyList = new ArrayList<UserCurrencyDAO>();
                 Iterable<DataSnapshot> child = dataSnapshot.getChildren();
-                for (DataSnapshot item :  child) {
+                for (DataSnapshot item : child) {
                     userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
                 }
                 StringBuilder sb = new StringBuilder();
-                for (UserCurrencyDAO item: userCurrencyList) {
+                for (UserCurrencyDAO item : userCurrencyList) {
                     sb.append("----------\n");
                     sb.append(item.toString());
                     sb.append("\n");
