@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="currencyratereminder.continuum.com.currencyratereminder.com.continuum.currencyratereminder.MainActivity"
+    tools:context="com.continuum.currencyratereminder.activitiy.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <TextView

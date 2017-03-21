@@ -19,7 +19,7 @@ import currencyratereminder.continuum.com.currencyratereminder.R;
 
 public class AddCurrencyActivity extends AppCompatActivity {
 
-    private static final String TAG = "AddCurrencyActivity";
+    private static final String TAG = AddCurrencyActivity.class.getSimpleName();
     private DatabaseReference mDatabase;
 
     private FirebaseAuth mAuth;

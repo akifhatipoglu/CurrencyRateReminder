@@ -1,9 +1,11 @@
 package com.continuum.currencyratereminder.DAO;
 
+import com.google.firebase.database.IgnoreExtraProperties;
+
 /**
  * Created by AkifHatipoğlu on 19.3.2017.
  */
-
+@IgnoreExtraProperties
 public class UserCurrencyDAO {
 
     private String userId;
