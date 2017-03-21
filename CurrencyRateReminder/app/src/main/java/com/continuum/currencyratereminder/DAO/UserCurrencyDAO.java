@@ -12,6 +12,9 @@ public class UserCurrencyDAO {
     private String CurrencyRate;
     private String Amount;
 
+    public UserCurrencyDAO() {
+    }
+
     public UserCurrencyDAO(String userId, String userKey, String currencyType, String currencyRate, String amount) {
         this.userId = userId;
         this.userKey = userKey;

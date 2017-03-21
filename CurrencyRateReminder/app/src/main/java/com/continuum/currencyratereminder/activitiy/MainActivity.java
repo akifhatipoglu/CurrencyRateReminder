@@ -10,13 +10,24 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
@@ -26,15 +37,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mDatabase;
+    private ArrayList<UserCurrencyDAO> userCurrencyList;
 
+    private TextView textViewForTrial;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        userCurrencyList = new ArrayList<UserCurrencyDAO>();
+        textViewForTrial = (TextView) findViewById(R.id.textViewForTest);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -80,6 +97,30 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+
+        mDatabase.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userCurrencyList = new ArrayList<UserCurrencyDAO>();
+                Iterable<DataSnapshot> child = dataSnapshot.getChildren();
+                for (DataSnapshot item :  child) {
+                    userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
+                }
+                StringBuilder sb = new StringBuilder();
+                for (UserCurrencyDAO item: userCurrencyList) {
+                    sb.append("----------\n");
+                    sb.append(item.toString());
+                    sb.append("\n");
+                }
+                textViewForTrial.setText(sb.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
     }
 
     @Override
