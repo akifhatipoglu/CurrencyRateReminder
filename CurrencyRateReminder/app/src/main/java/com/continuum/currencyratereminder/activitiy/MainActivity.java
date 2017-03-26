@@ -5,15 +5,18 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
+import com.continuum.currencyratereminder.helper.ListItemsAdapter;
+import com.continuum.currencyratereminder.helper.SimpleDividerItemDecoration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -36,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabase;
+    private RecyclerView mListItemsRecyclerView;
+    private ListItemsAdapter mAdapter;
     private ArrayList<UserCurrencyDAO> userCurrencyList;
-
-    private TextView textViewForTrial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         userCurrencyList = new ArrayList<UserCurrencyDAO>();
-        textViewForTrial = (TextView) findViewById(R.id.textViewForTest);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -63,9 +65,14 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
+
+        mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
+        mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
+        mListItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        updateUI();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -100,26 +107,29 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                userCurrencyList = new ArrayList<UserCurrencyDAO>();
-                Iterable<DataSnapshot> child = dataSnapshot.getChildren();
-                for (DataSnapshot item : child) {
-                    userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
-                }
-                StringBuilder sb = new StringBuilder();
-                for (UserCurrencyDAO item : userCurrencyList) {
-                    sb.append("----------\n");
-                    sb.append(item.toString());
-                    sb.append("\n");
-                }
-                textViewForTrial.setText(sb.toString());
+                Log.w(TAG, "Success read value.");
+                fetchData(dataSnapshot);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    private void fetchData(DataSnapshot dataSnapshot) {
+        userCurrencyList = new ArrayList<>();
+        Iterable<DataSnapshot> child = dataSnapshot.getChildren();
+        for (DataSnapshot item : child) {
+            userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
+        }
+        updateUI();
+    }
+
+    private void updateUI() {
+        mAdapter = new ListItemsAdapter(MainActivity.this, userCurrencyList);
+        mListItemsRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

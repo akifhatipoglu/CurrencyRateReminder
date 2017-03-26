@@ -18,7 +18,7 @@ import currencyratereminder.continuum.com.currencyratereminder.R;
  * Created by AkifHatipoğlu on 21.3.2017.
  */
 
-public class SwipeListAdapter extends BaseAdapter{
+public class SwipeListAdapter extends BaseAdapter {
     private Activity activity;
     private LayoutInflater inflater;
     private List<UserCurrencyDAO> userCurrencyDAOList;

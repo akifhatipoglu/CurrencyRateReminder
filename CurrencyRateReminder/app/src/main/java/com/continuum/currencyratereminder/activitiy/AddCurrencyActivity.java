@@ -57,7 +57,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
         Log.d(TAG, "add Firebase:" + mAuth.getCurrentUser().getUid());
         String key = mDatabase.child(mAuth.getCurrentUser().getUid()).push().getKey();
         //TODO: UserCurrencyDoa 'dan user bilgileri çıkartılabilir.
-        UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(),key,"USD",edtCurrency.getText().toString(),edtAmount.getText().toString());
+        UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(), key, "USD", edtCurrency.getText().toString(), edtAmount.getText().toString());
         mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).setValue(userCurrency);
     }
 }

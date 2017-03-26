@@ -1,6 +1,10 @@
 package com.continuum.currencyratereminder.DAO;
 
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by AkifHatipoğlu on 19.3.2017.
@@ -15,6 +19,7 @@ public class UserCurrencyDAO {
     private String Amount;
 
     public UserCurrencyDAO() {
+        // Default constructor required for calls to DataSnapshot.getValue(ListItem.class)
     }
 
     public UserCurrencyDAO(String userId, String userKey, String currencyType, String currencyRate, String amount) {
@@ -74,5 +79,16 @@ public class UserCurrencyDAO {
                 ", CurrencyRate='" + CurrencyRate + '\'' +
                 ", Amount='" + Amount + '\'' +
                 '}';
+    }
+
+    @Exclude
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("userId", userId);
+        result.put("userKey", userKey);
+        result.put("CurrencyType", CurrencyType);
+        result.put("CurrencyRate", CurrencyRate);
+        result.put("Amount", Amount);
+        return result;
     }
 }
