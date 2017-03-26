@@ -53,36 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-
-        mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
-        mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
-        mListItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        updateUI();
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "add button:" + mAuth.getCurrentUser().getUid());
-                startActivity(new Intent(MainActivity.this, AddCurrencyActivity.class));
-                finish();
-            }
-        });
         if (mAuth.getCurrentUser() == null) {
             mAuth.signInAnonymously()
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -103,6 +73,33 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
         }
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+
+        mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
+        mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
+        mListItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "add button:" + mAuth.getCurrentUser().getUid());
+                startActivity(new Intent(MainActivity.this, AddCurrencyActivity.class));
+                finish();
+            }
+        });
 
         mDatabase.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -116,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
+
+        updateUI();
     }
 
     private void fetchData(DataSnapshot dataSnapshot) {
