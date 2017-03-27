@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
@@ -18,11 +20,13 @@ import currencyratereminder.continuum.com.currencyratereminder.R;
 
 public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
     private ArrayList<UserCurrencyDAO> mListItems;
+    private List<CurrenciesJsonDao> mCurrenciesJsonItems;
     private Activity mActivity;
 
     public ListItemsAdapter(Activity activity, ArrayList<UserCurrencyDAO> ListItems) {
         mListItems = ListItems;
         mActivity = activity;
+        mCurrenciesJsonItems = RetroJsonClient.getLatest();
     }
 
 
@@ -36,10 +40,8 @@ public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
 
     @Override
     public void onBindViewHolder(ListItemsHolder holder, int position) {
-
         UserCurrencyDAO s = mListItems.get(position);
-        holder.bindData(s);
-
+        holder.bindData(s, mCurrenciesJsonItems);
     }
 
     @Override

@@ -36,13 +36,11 @@ public class CurrenciesJsonDao {
 
     /**
      * No args constructor for use in serialization
-     *
      */
     public CurrenciesJsonDao() {
     }
 
     /**
-     *
      * @param selling
      * @param name
      * @param buying
