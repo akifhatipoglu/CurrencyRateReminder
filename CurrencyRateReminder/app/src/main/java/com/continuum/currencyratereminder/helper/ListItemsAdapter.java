@@ -23,10 +23,10 @@ public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
     private List<CurrenciesJsonDao> mCurrenciesJsonItems;
     private Activity mActivity;
 
-    public ListItemsAdapter(Activity activity, ArrayList<UserCurrencyDAO> ListItems) {
-        mListItems = ListItems;
+    public ListItemsAdapter(Activity activity, ArrayList<UserCurrencyDAO> userInfoList, ArrayList<CurrenciesJsonDao> currenciesJsonDaoList) {
+        mListItems = userInfoList;
         mActivity = activity;
-        mCurrenciesJsonItems = RetroJsonClient.getLatest();
+        mCurrenciesJsonItems = currenciesJsonDaoList;
     }
 
 
@@ -47,6 +47,5 @@ public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
     @Override
     public int getItemCount() {
         return mListItems.size();
-
     }
 }

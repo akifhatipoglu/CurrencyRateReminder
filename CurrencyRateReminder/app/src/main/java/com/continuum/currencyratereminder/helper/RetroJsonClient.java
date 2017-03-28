@@ -5,7 +5,6 @@ import android.util.Log;
 import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,7 +18,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetroJsonClient {
 
-    private static List<CurrenciesJsonDao> currenciesJsonDaoList = null;
     private static final String TAG = RetroJsonClient.class.getSimpleName();
     /********
      * URLS
@@ -45,8 +43,8 @@ public class RetroJsonClient {
         return getRetrofitInstance().create(RetroJsonApiService.class);
     }
 
-    public static List<CurrenciesJsonDao> getLatest() {
-        currenciesJsonDaoList = new ArrayList<>();
+    public static ArrayList<CurrenciesJsonDao> getLatest() {
+        final ArrayList<CurrenciesJsonDao> currenciesJsonDaoList = new ArrayList<>();
 
         RetroJsonApiService api = RetroJsonClient.getApiService();
 
@@ -54,7 +52,7 @@ public class RetroJsonClient {
         call.enqueue(new Callback<CurrenciesJsonDao>() {
             @Override
             public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
-                Log.d(TAG, "Response" + response.isSuccessful()+"-"+response.message());
+                Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
                 if (response.isSuccessful()) {
                     Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
                     currenciesJsonDaoList.add(response.body());

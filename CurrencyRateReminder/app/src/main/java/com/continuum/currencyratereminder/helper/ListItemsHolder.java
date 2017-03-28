@@ -33,8 +33,8 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
         currencyType.setText(String.valueOf(s.getCurrencyType()));
         currency.setText(s.getCurrencyRate());
         amount.setText(s.getAmount());
-        if(item.size()>0)
-        rate.setText(item.get(0).getBuying().toString() + "-" + item.get(0).getSelling().toString());
+        if (item.size() > 0)
+            rate.setText(item.get(0).getBuying().toString() + "-" + item.get(0).getSelling().toString());
     }
 
     @Override

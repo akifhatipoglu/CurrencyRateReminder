@@ -14,8 +14,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 import com.continuum.currencyratereminder.helper.ListItemsAdapter;
+import com.continuum.currencyratereminder.helper.RetroJsonClient;
 import com.continuum.currencyratereminder.helper.SimpleDividerItemDecoration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mListItemsRecyclerView;
     private ListItemsAdapter mAdapter;
     private ArrayList<UserCurrencyDAO> userCurrencyList;
-
+    private ArrayList<CurrenciesJsonDao> currenciesJsonDaoList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         userCurrencyList = new ArrayList<UserCurrencyDAO>();
+        currenciesJsonDaoList = new ArrayList<>();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -86,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        currenciesJsonDaoList = RetroJsonClient.getLatest();
 
         mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
         mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
@@ -127,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        mAdapter = new ListItemsAdapter(MainActivity.this, userCurrencyList);
+        mAdapter = new ListItemsAdapter(MainActivity.this, userCurrencyList, currenciesJsonDaoList);
         mListItemsRecyclerView.setAdapter(mAdapter);
     }
 
