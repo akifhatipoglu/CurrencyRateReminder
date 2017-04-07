@@ -1,14 +1,8 @@
 package com.continuum.currencyratereminder.helper;
 
-import android.util.Log;
-
 import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 
-import java.util.ArrayList;
-
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -43,30 +37,12 @@ public class RetroJsonClient {
         return getRetrofitInstance().create(RetroJsonApiService.class);
     }
 
-    public static ArrayList<CurrenciesJsonDao> getLatest() {
-        final ArrayList<CurrenciesJsonDao> currenciesJsonDaoList = new ArrayList<>();
-
+    public static  Call<CurrenciesJsonDao> getLatest() {
         RetroJsonApiService api = RetroJsonClient.getApiService();
-
         Call<CurrenciesJsonDao> call = api.getUSDCurrency();
-        call.enqueue(new Callback<CurrenciesJsonDao>() {
-            @Override
-            public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
-                Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
-                if (response.isSuccessful()) {
-                    Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
-                    currenciesJsonDaoList.add(response.body());
-                } else {
-                    Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
-                Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());
-            }
-        });
-
-        return currenciesJsonDaoList;
+        return call;
     }
+    /**
+     *
+     * */
 }

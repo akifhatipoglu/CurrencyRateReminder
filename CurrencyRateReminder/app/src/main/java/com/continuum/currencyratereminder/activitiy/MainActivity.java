@@ -33,6 +33,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private ListItemsAdapter mAdapter;
     private ArrayList<UserCurrencyDAO> userCurrencyList;
     private ArrayList<CurrenciesJsonDao> currenciesJsonDaoList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,8 +94,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        currenciesJsonDaoList = RetroJsonClient.getLatest();
-
         mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
         mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
         mListItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -118,22 +120,43 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
-        updateUI();
     }
 
     private void fetchData(DataSnapshot dataSnapshot) {
         userCurrencyList = new ArrayList<>();
+        currenciesJsonDaoList = new ArrayList<>();
         Iterable<DataSnapshot> child = dataSnapshot.getChildren();
         for (DataSnapshot item : child) {
             userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
         }
-        updateUI();
+        fetchLatestCurrency();
+        updateUI("fetchData");
     }
 
-    private void updateUI() {
+    private void updateUI(String stackTraceForLog) {
+        Log.d(TAG, "updateUI" + " - " + stackTraceForLog);
         mAdapter = new ListItemsAdapter(MainActivity.this, userCurrencyList, currenciesJsonDaoList);
         mListItemsRecyclerView.setAdapter(mAdapter);
+    }
+
+    private void fetchLatestCurrency(){
+        RetroJsonClient.getLatest().enqueue(new Callback<CurrenciesJsonDao>() {
+            @Override
+            public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
+                Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
+                    currenciesJsonDaoList.add(response.body());
+                    updateUI("Callback");
+                } else {
+                    Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString());
+                }
+            }
+            @Override
+            public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
+                Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());
+            }
+        });
     }
 
     @Override
