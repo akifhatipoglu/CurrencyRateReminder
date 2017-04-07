@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +38,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private ListItemsAdapter mAdapter;
     private ArrayList<UserCurrencyDAO> userCurrencyList;
     private ArrayList<CurrenciesJsonDao> currenciesJsonDaoList;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         mListItemsRecyclerView = (RecyclerView) findViewById(R.id.listItem_recycler_view);
         mListItemsRecyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
         mListItemsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchLatestCurrency(){
+        swipeRefreshLayout.setRefreshing(true);
         RetroJsonClient.getLatest().enqueue(new Callback<CurrenciesJsonDao>() {
             @Override
             public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
@@ -147,10 +152,15 @@ public class MainActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
                     currenciesJsonDaoList.add(response.body());
+                    mAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
                     updateUI("Callback");
+
                 } else {
                     Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString());
+                    swipeRefreshLayout.setRefreshing(false);
                 }
+
             }
             @Override
             public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
@@ -193,5 +203,11 @@ public class MainActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        fetchLatestCurrency();
+        updateUI("onRefresh");
     }
 }
