@@ -42,7 +42,4 @@ public class RetroJsonClient {
         Call<CurrenciesJsonDao> call = api.getUSDCurrency();
         return call;
     }
-    /**
-     *
-     * */
 }

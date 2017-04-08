@@ -10,9 +10,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
+import com.continuum.currencyratereminder.helper.RetroJsonClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -23,6 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AddCurrencyActivity extends AppCompatActivity {
 
@@ -33,6 +39,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
     private Button btnAdd;
     private EditText edtCurrency, edtAmount;
     private MaterialSpinner spinnerCurrencyType;
+    private ProgressBar progressBarForSpinner;
     private static List<String> currencyTypeList =  Arrays.asList("USD", "EUR", "AKIF");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
         edtAmount = (EditText) findViewById(R.id.editTextAmount);
         spinnerCurrencyType = (MaterialSpinner) findViewById(R.id.spinnerCurrencyType);
         spinnerCurrencyType.setItems(currencyTypeList);
+        progressBarForSpinner.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -63,7 +71,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
         spinnerCurrencyType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+                fetchLatestCurrency();
             }
         });
     }
@@ -74,6 +82,32 @@ public class AddCurrencyActivity extends AppCompatActivity {
         //TODO: UserCurrencyDoa 'dan user bilgileri çıkartılabilir.
         UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(), key, "USD", edtCurrency.getText().toString(), edtAmount.getText().toString());
         mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).setValue(userCurrency);
+    }
+
+    private void fetchLatestCurrency(){
+        progressBarForSpinner.setVisibility(View.VISIBLE);
+        RetroJsonClient.getLatest().enqueue(new Callback<CurrenciesJsonDao>() {
+            @Override
+            public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
+                Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
+                    //currenciesJsonDaoList.add(response.body());
+                    edtCurrency.setText(response.body().getBuying().toString());
+                    progressBarForSpinner.setVisibility(View.GONE);
+
+                } else {
+                    Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString());
+                    progressBarForSpinner.setVisibility(View.GONE);
+                }
+
+            }
+            @Override
+            public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
+                Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());
+                progressBarForSpinner.setVisibility(View.GONE);
+            }
+        });
     }
 }
 
