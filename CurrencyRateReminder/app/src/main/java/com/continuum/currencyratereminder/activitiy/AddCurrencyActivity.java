@@ -7,11 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 
 import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
@@ -21,7 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +37,8 @@ public class AddCurrencyActivity extends AppCompatActivity {
     private EditText edtCurrency, edtAmount;
     private MaterialSpinner spinnerCurrencyType;
     private ProgressBar progressBarForSpinner;
-    private static List<String> currencyTypeList =  Arrays.asList("USD", "EUR", "AKIF");
+    private static List<String> currencyTypeList = Arrays.asList("USD", "EUR");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,10 +69,12 @@ public class AddCurrencyActivity extends AppCompatActivity {
         });
         spinnerCurrencyType.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
-            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                fetchLatestCurrency();
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+                fetchLatestCurrency(item);
             }
         });
+        fetchLatestCurrency(currencyTypeList.get(0));
     }
 
     private void addFirebase() {
@@ -85,9 +85,9 @@ public class AddCurrencyActivity extends AppCompatActivity {
         mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).setValue(userCurrency);
     }
 
-    private void fetchLatestCurrency(){
+    private void fetchLatestCurrency(String item) {
         progressBarForSpinner.setVisibility(View.VISIBLE);
-        RetroJsonClient.getLatest().enqueue(new Callback<CurrenciesJsonDao>() {
+        RetroJsonClient.getLatest(item).enqueue(new Callback<CurrenciesJsonDao>() {
             @Override
             public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
                 Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
@@ -103,6 +103,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
                 }
 
             }
+
             @Override
             public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
                 Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());

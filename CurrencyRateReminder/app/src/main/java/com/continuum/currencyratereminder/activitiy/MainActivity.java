@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void fetchLatestCurrency(){
         swipeRefreshLayout.setRefreshing(true);
-        RetroJsonClient.getLatest().enqueue(new Callback<CurrenciesJsonDao>() {
+        RetroJsonClient.getLatest("USD").enqueue(new Callback<CurrenciesJsonDao>() {
             @Override
             public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
                 Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
