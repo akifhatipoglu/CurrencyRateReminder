@@ -50,6 +50,7 @@ public class AddCurrencyActivity extends AppCompatActivity {
         edtAmount = (EditText) findViewById(R.id.editTextAmount);
         spinnerCurrencyType = (MaterialSpinner) findViewById(R.id.spinnerCurrencyType);
         spinnerCurrencyType.setItems(currencyTypeList);
+        progressBarForSpinner = (ProgressBar) findViewById(R.id.progressBarForSpinner);
         progressBarForSpinner.setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
