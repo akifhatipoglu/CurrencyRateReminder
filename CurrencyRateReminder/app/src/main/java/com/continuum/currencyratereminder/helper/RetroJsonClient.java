@@ -37,16 +37,14 @@ public class RetroJsonClient {
         return getRetrofitInstance().create(RetroJsonApiService.class);
     }
 
-    public static  Call<CurrenciesJsonDao> getLatest(String currencyType) {
+    public static Call<CurrenciesJsonDao> getLatest(String currencyType) {
         RetroJsonApiService api = RetroJsonClient.getApiService();
         Call<CurrenciesJsonDao> call = null;
         if ("USD".equals(currencyType)) {
             call = api.getUSDCurrency();
-        }
-        else if ("EUR".equals(currencyType)) {
+        } else if ("EUR".equals(currencyType)) {
             call = api.getEURCurrency();
-        }
-        else{
+        } else {
             call = api.getUSDCurrency();
         }
         return call;

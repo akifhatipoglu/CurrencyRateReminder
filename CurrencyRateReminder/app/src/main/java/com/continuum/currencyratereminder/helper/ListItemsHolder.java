@@ -8,8 +8,6 @@ import android.widget.Toast;
 import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 
-import java.util.List;
-
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
 /**
@@ -29,12 +27,13 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
         itemView.setOnLongClickListener(this);
     }
 
-    public void bindData(UserCurrencyDAO s, List<CurrenciesJsonDao> item) {
-        currencyType.setText(String.valueOf(s.getCurrencyType()));
-        currency.setText(s.getCurrencyRate());
-        amount.setText(s.getAmount());
-        if (item.size() > 0)
-            rate.setText(item.get(0).getBuying().toString() + "-" + item.get(0).getSelling().toString());
+    public void bindData(UserCurrencyDAO userCurrencyDAO, CurrenciesJsonDao currenciesJsonDao) {
+        currencyType.setText(String.valueOf(userCurrencyDAO.getCurrencyType()));
+        currency.setText(userCurrencyDAO.getCurrencyRate());
+        amount.setText(userCurrencyDAO.getAmount());
+        if (currenciesJsonDao != null && currenciesJsonDao.getSelling() != null) {
+            rate.setText(currenciesJsonDao.getSelling().toString());
+        }
     }
 
     @Override

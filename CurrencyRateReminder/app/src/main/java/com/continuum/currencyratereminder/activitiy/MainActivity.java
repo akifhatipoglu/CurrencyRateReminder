@@ -32,13 +32,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener{
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private RecyclerView mListItemsRecyclerView;
     private ListItemsAdapter mAdapter;
     private ArrayList<UserCurrencyDAO> userCurrencyList;
-    private ArrayList<CurrenciesJsonDao> currenciesJsonDaoList;
+    private HashMap<String, CurrenciesJsonDao> currenciesJsonDaoList;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         userCurrencyList = new ArrayList<UserCurrencyDAO>();
-        currenciesJsonDaoList = new ArrayList<>();
+        currenciesJsonDaoList = new HashMap<String, CurrenciesJsonDao>();
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -77,8 +78,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                                 Toast.makeText(MainActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();
                             }
-
-                            // ...
                         }
                     });
         }
@@ -128,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     private void fetchData(DataSnapshot dataSnapshot) {
         userCurrencyList = new ArrayList<>();
-        currenciesJsonDaoList = new ArrayList<>();
+        currenciesJsonDaoList = new HashMap<String, CurrenciesJsonDao>();
         Iterable<DataSnapshot> child = dataSnapshot.getChildren();
         for (DataSnapshot item : child) {
             userCurrencyList.add(item.getValue(UserCurrencyDAO.class));
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mListItemsRecyclerView.setAdapter(mAdapter);
     }
 
-    private void fetchLatestCurrency(){
+    private void fetchLatestCurrency() {
         swipeRefreshLayout.setRefreshing(true);
         RetroJsonClient.getLatest("USD").enqueue(new Callback<CurrenciesJsonDao>() {
             @Override
@@ -151,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
                 if (response.isSuccessful()) {
                     Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
-                    currenciesJsonDaoList.add(response.body());
+                    currenciesJsonDaoList.put(response.body().getCode(), response.body());
                     mAdapter.notifyDataSetChanged();
                     swipeRefreshLayout.setRefreshing(false);
                     updateUI("Callback");
@@ -162,6 +161,30 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 }
 
             }
+
+            @Override
+            public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
+                Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());
+            }
+        });
+        RetroJsonClient.getLatest("EUR").enqueue(new Callback<CurrenciesJsonDao>() {
+            @Override
+            public void onResponse(Call<CurrenciesJsonDao> call, Response<CurrenciesJsonDao> response) {
+                Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
+                    currenciesJsonDaoList.put(response.body().getCode(), response.body());
+                    mAdapter.notifyDataSetChanged();
+                    swipeRefreshLayout.setRefreshing(false);
+                    updateUI("Callback");
+
+                } else {
+                    Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString());
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
+            }
+
             @Override
             public void onFailure(Call<CurrenciesJsonDao> call, Throwable t) {
                 Log.d(TAG, "call" + "getLatest" + "FAIL" + call.toString() + "-" + t.toString());

@@ -3,6 +3,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="add">Ekle</string>
+    <string name="Currency">Kur</string>
+    <string name="Amount">Miktar</string>
 
     <string name="error_message_editText_empty">Lütfen tüm alanları doldurunuz.</string>
 

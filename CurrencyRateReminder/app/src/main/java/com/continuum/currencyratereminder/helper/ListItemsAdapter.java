@@ -10,7 +10,7 @@ import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
@@ -20,10 +20,10 @@ import currencyratereminder.continuum.com.currencyratereminder.R;
 
 public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
     private ArrayList<UserCurrencyDAO> mListItems;
-    private List<CurrenciesJsonDao> mCurrenciesJsonItems;
+    private HashMap<String, CurrenciesJsonDao> mCurrenciesJsonItems;
     private Activity mActivity;
 
-    public ListItemsAdapter(Activity activity, ArrayList<UserCurrencyDAO> userInfoList, ArrayList<CurrenciesJsonDao> currenciesJsonDaoList) {
+    public ListItemsAdapter(Activity activity, ArrayList<UserCurrencyDAO> userInfoList, HashMap<String, CurrenciesJsonDao> currenciesJsonDaoList) {
         mListItems = userInfoList;
         mActivity = activity;
         mCurrenciesJsonItems = currenciesJsonDaoList;
@@ -40,8 +40,12 @@ public class ListItemsAdapter extends RecyclerView.Adapter<ListItemsHolder> {
 
     @Override
     public void onBindViewHolder(ListItemsHolder holder, int position) {
-        UserCurrencyDAO s = mListItems.get(position);
-        holder.bindData(s, mCurrenciesJsonItems);
+        UserCurrencyDAO userCurrencyDAO = mListItems.get(position);
+        CurrenciesJsonDao currenciesJsonItem = new CurrenciesJsonDao();
+        if (!mCurrenciesJsonItems.isEmpty() && mCurrenciesJsonItems.containsKey(userCurrencyDAO.getCurrencyType())) {
+            currenciesJsonItem = mCurrenciesJsonItems.get(userCurrencyDAO.getCurrencyType());
+        }
+        holder.bindData(userCurrencyDAO, currenciesJsonItem);
     }
 
     @Override

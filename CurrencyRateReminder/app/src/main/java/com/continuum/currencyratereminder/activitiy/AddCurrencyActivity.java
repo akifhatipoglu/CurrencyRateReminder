@@ -30,14 +30,13 @@ import retrofit2.Response;
 public class AddCurrencyActivity extends AppCompatActivity {
 
     private static final String TAG = AddCurrencyActivity.class.getSimpleName();
+    private static List<String> currencyTypeList = Arrays.asList("USD", "EUR");
     private DatabaseReference mDatabase;
-
     private FirebaseAuth mAuth;
     private Button btnAdd;
     private EditText edtCurrency, edtAmount;
     private MaterialSpinner spinnerCurrencyType;
     private ProgressBar progressBarForSpinner;
-    private static List<String> currencyTypeList = Arrays.asList("USD", "EUR");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +80,9 @@ public class AddCurrencyActivity extends AppCompatActivity {
         Log.d(TAG, "add Firebase:" + mAuth.getCurrentUser().getUid());
         String key = mDatabase.child(mAuth.getCurrentUser().getUid()).push().getKey();
         //TODO: UserCurrencyDoa 'dan user bilgileri çıkartılabilir.
-        UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(), key, "USD", edtCurrency.getText().toString(), edtAmount.getText().toString());
+        UserCurrencyDAO userCurrency = new UserCurrencyDAO(mAuth.getCurrentUser().getUid(), key,
+                spinnerCurrencyType.getItems().get(spinnerCurrencyType.getSelectedIndex()).toString(),
+                edtCurrency.getText().toString(), edtAmount.getText().toString());
         mDatabase.child(mAuth.getCurrentUser().getUid()).child(key).setValue(userCurrency);
     }
 
@@ -93,7 +94,6 @@ public class AddCurrencyActivity extends AppCompatActivity {
                 Log.d(TAG, "Response" + response.isSuccessful() + "-" + response.message());
                 if (response.isSuccessful()) {
                     Log.d(TAG, "call" + "getLatest" + "Success" + response.body().toString());
-                    //currenciesJsonDaoList.add(response.body());
                     edtCurrency.setText(response.body().getBuying().toString());
                     progressBarForSpinner.setVisibility(View.GONE);
 
