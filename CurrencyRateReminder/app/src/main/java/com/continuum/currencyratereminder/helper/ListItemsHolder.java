@@ -1,5 +1,7 @@
 package com.continuum.currencyratereminder.helper;
 
+import android.graphics.Color;
+import android.renderscript.Double2;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -7,6 +9,8 @@ import android.widget.Toast;
 
 import com.continuum.currencyratereminder.DAO.CurrenciesJsonDao;
 import com.continuum.currencyratereminder.DAO.UserCurrencyDAO;
+
+import org.w3c.dom.Text;
 
 import currencyratereminder.continuum.com.currencyratereminder.R;
 
@@ -16,7 +20,7 @@ import currencyratereminder.continuum.com.currencyratereminder.R;
 
 public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
 
-    public TextView currencyType, currency, amount, rate;
+    public TextView currencyType, currency, amount, rate, rateAmount, buying;
 
     public ListItemsHolder(final View itemView) {
         super(itemView);
@@ -24,6 +28,8 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
         currency = (TextView) itemView.findViewById(R.id.textViewCurrency);
         amount = (TextView) itemView.findViewById(R.id.textViewAmount);
         rate = (TextView) itemView.findViewById(R.id.textViewRate);
+        buying = (TextView) itemView.findViewById(R.id.textViewBuying);
+        rateAmount = (TextView) itemView.findViewById(R.id.textViewRateAmount);
         itemView.setOnLongClickListener(this);
     }
 
@@ -31,14 +37,32 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
         currencyType.setText(String.valueOf(userCurrencyDAO.getCurrencyType()));
         currency.setText(userCurrencyDAO.getCurrencyRate());
         amount.setText(userCurrencyDAO.getAmount());
-        if (currenciesJsonDao != null && currenciesJsonDao.getSelling() != null) {
-            rate.setText(currenciesJsonDao.getSelling().toString());
+        if (currenciesJsonDao != null && currenciesJsonDao.getBuying() != null) {
+            buying.setText(currenciesJsonDao.getBuying().toString());
+
+            Double gap = currenciesJsonDao.getBuying() - Double.parseDouble(userCurrencyDAO.getCurrencyRate());
+            Double result = Double.parseDouble(userCurrencyDAO.getAmount()) * gap;
+            rate.setText(result.toString().substring(0, 6) + " TL");
+
+            Double percent = (result * 100) / Double.parseDouble(userCurrencyDAO.getAmount());
+            rateAmount.setText("%" + percent.toString().substring(0, 5));
+            if (result > 0) {
+                rate.setBackgroundColor(Color.GREEN);
+                rateAmount.setBackgroundColor(Color.GREEN);
+            } else if (result < 0) {
+                rate.setBackgroundColor(Color.RED);
+                rateAmount.setBackgroundColor(Color.RED);
+            } else {
+                rate.setBackgroundColor(Color.YELLOW);
+                rateAmount.setBackgroundColor(Color.YELLOW);
+            }
+
         }
     }
 
     @Override
     public boolean onLongClick(View v) {
-        Toast.makeText(itemView.getContext(), currencyType.getText() + "-" + currency.getText() + "-" + amount.getText(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(itemView.getContext(), rate.getText(), Toast.LENGTH_SHORT).show();
         return true;
     }
 }

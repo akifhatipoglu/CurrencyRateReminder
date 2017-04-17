@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/textViewCurrencyType"
-        android:layout_width="84dp"
-        android:layout_height="21dp"
+        android:layout_width="53dp"
+        android:layout_height="35dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
@@ -21,8 +21,8 @@
 
     <TextView
         android:id="@+id/textViewCurrency"
-        android:layout_width="84dp"
-        android:layout_height="21dp"
+        android:layout_width="53dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
@@ -33,10 +33,9 @@
 
     <TextView
         android:id="@+id/textViewAmount"
-        android:layout_width="84dp"
-        android:layout_height="21dp"
+        android:layout_width="54dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -46,16 +45,40 @@
 
     <TextView
         android:id="@+id/textViewRate"
-        android:layout_width="84dp"
-        android:layout_height="21dp"
+        android:layout_width="53dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/textViewAmount"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewBuying"
+        android:layout_width="54dp"
+        android:layout_height="33dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/textViewRateAmount"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp" />
+
+    <TextView
+        android:id="@+id/textViewRateAmount"
+        android:layout_width="53dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/textViewRate"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
