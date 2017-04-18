@@ -42,10 +42,12 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
 
             Double gap = currenciesJsonDao.getBuying() - Double.parseDouble(userCurrencyDAO.getCurrencyRate());
             Double result = Double.parseDouble(userCurrencyDAO.getAmount()) * gap;
-            rate.setText(result.toString().substring(0, 6) + " TL");
+            String resultString = result.toString().length() > 6 ? result.toString().substring(0, 6) : result.toString();
+            rate.setText(resultString + " TL");
 
             Double percent = (result * 100) / Double.parseDouble(userCurrencyDAO.getAmount());
-            rateAmount.setText("%" + percent.toString().substring(0, 5));
+            String percentString = percent.toString().length() > 5 ? percent.toString().substring(0, 5) : percent.toString();
+            rateAmount.setText("%" + percentString);
             if (result > 0) {
                 rate.setBackgroundColor(Color.GREEN);
                 rateAmount.setBackgroundColor(Color.GREEN);
@@ -56,7 +58,6 @@ public class ListItemsHolder extends RecyclerView.ViewHolder implements View.OnL
                 rate.setBackgroundColor(Color.YELLOW);
                 rateAmount.setBackgroundColor(Color.YELLOW);
             }
-
         }
     }
 
