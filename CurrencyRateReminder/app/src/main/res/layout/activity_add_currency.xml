@@ -7,36 +7,29 @@
     android:background="@color/colorPrimary"
     tools:context="com.continuum.currencyratereminder.activitiy.AddCurrencyActivity">
 
-
-    <EditText
-        android:id="@+id/editTextCurrency"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_editTextCurrency"
+        android:layout_width="98dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        android:text="@string/Currency"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerCurrencyType"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
-
-    <EditText
-        android:id="@+id/editTextAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:ems="10"
-        android:inputType="numberDecimal"
-        android:text="@string/Amount"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextCurrency"
-        tools:layout_constraintLeft_creator="1"
-        tools:layout_constraintRight_creator="1" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerCurrencyType">
+        <EditText
+            android:id="@+id/editTextCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:hint="@string/Currency"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerCurrencyType"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/buttonAdd"
@@ -52,7 +45,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAmount" />
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/layout_editTextAmountCurrency" />
 
     <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/spinnerCurrencyType"
@@ -65,7 +59,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="113dp" />
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp" />
 
     <ProgressBar
         android:id="@+id/progressBarForSpinner"
@@ -76,6 +71,48 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/layout_editTextAmountCurrency"
+        android:layout_width="215dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_editTextCurrency">
+
+        <EditText
+            android:id="@+id/editTextAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:hint="@string/Amount"
+            android:inputType="numberDecimal"
+            app:layout_constraintHorizontal_bias="0.502"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_editTextCurrency"
+            tools:layout_constraintLeft_creator="1"
+            tools:layout_constraintRight_creator="1" />
+    </android.support.design.widget.TextInputLayout>
+
+    <TextView
+        android:id="@+id/textViewTL"
+        android:layout_width="71dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:text="TL"
+        android:textAlignment="textStart"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toRightOf="@+id/layout_editTextAmountCurrency"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/layout_editTextAmountCurrency"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_editTextAmountCurrency"
+        android:layout_marginBottom="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>
